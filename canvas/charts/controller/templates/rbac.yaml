@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "controller.labels" . | nindent 4 }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: odacomponent-role-cluster
@@ -65,7 +65,7 @@ rules:
     verbs: [create]
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   namespace: {{.Values.global.namespaceDefault.name}}
@@ -121,7 +121,7 @@ rules:
 #    verbs: [create, watch, list]
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: odacomponent-rolebinding-cluster
