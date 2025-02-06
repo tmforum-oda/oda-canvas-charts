@@ -65,7 +65,7 @@ Create the name of the service account to use
 build the full compop docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "component-operator.compopDockerimage" -}}
-  {{- .Values.deployment.compopImage -}}:{{- .Values.deployment.compopVersion -}}
+  {{ include "docker.registry" .}}{{- .Values.deployment.compopImage -}}:{{- .Values.deployment.compopVersion -}}
   {{- if .Values.deployment.compopPrereleaseSuffix -}}
     -{{- .Values.deployment.compopPrereleaseSuffix -}}
   {{- end -}}

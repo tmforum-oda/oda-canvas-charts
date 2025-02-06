@@ -15,7 +15,8 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.2.0
+version: 1.2.1
+# version: 1.2.1 - Added support for custom/private docker registry and image pull secrets
 # version: 1.2.0 - updated to support v1 of CRD spec (and remove v1beta1)
 # version: 1.1.4 - added componentMetadata and apiSDO to v1beta4 crds
 # version: 1.1.3 - added v1beta4 crds and removed v1alpha crds

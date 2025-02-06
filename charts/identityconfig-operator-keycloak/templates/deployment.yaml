@@ -18,6 +18,10 @@ spec:
         {{- include "identityconfig-operator-keycloak.labels" . | nindent 8 }}
     spec:
       serviceAccountName: identityconfig-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: {{.Values.deployment.operatorName}}
         image: {{ include "identityconfig-operator-keycloak.idkopImage" . }}

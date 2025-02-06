@@ -65,7 +65,7 @@ Create the name of the service account to use
 build the full oda-webhook docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "oda-webhook.dockerimage" -}}
-  {{- .Values.image -}}:{{- .Values.version -}}
+  {{ include "docker.registry" .}}{{- .Values.image -}}:{{- .Values.version -}}
   {{- if .Values.prereleaseSuffix -}}
     -{{- .Values.prereleaseSuffix -}}
   {{- end -}}

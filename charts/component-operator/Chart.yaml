@@ -15,7 +15,8 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.3.0
+version: 1.3.1
+# version: 1.3.1 - Added support for custom/private docker registry and image pull secrets
 # version: 1.3.0 - updated to use v1 of CRD spec
 # version: 1.2.2 - changed seccon user to canvassystem and keycloak realm to odari
 # version: 1.2.1 - removed operator-command configMap - no longer using entrypoint.sh

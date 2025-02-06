@@ -23,11 +23,15 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
         helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       restartPolicy: Never
       containers:
       - name: post-install-job
         # TODO[FH] remove suffix before merging to master/main
-        image: {{ .Values.global.hookImages.kubectlCurl }}
+        image: {{ include "docker.registry" .}}{{ .Values.global.hookImages.kubectlCurl }}
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh"]
         args: ["-c", "echo starting canvas vault post install hook;

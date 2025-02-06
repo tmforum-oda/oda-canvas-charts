@@ -10,9 +10,13 @@ spec:
   template:
     spec:
       serviceAccountName: {{ .Release.Name }}-operator
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: patch-istio-ingress
-        image: {{ .Values.global.hookImages.kubectl }}
+        image: {{ include "docker.registry" .}}{{ .Values.global.hookImages.kubectl }}
         command:
           - /bin/sh
           - -c

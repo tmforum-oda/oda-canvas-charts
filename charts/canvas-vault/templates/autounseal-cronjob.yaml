@@ -13,10 +13,14 @@ spec:
       ttlSecondsAfterFinished: 3600
       template:
         spec:
+          {{- if .Values.global.imagePullSecrets }}
+          imagePullSecrets:
+          {{- include "image-pull-secrets" . |nindent 10 }}
+          {{- end }}
           containers:
           - name: autounsealvault
             # TODO[FH] remove suffix before merging to master/main
-            image: {{ .Values.global.hookImages.kubectlCurl }}
+            image: {{ include "docker.registry" .}}{{ .Values.global.hookImages.kubectlCurl }}
             imagePullPolicy: IfNotPresent
             env:
             - name: VAULT_ADDR

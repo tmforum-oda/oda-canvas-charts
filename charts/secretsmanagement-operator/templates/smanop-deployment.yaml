@@ -15,6 +15,10 @@ spec:
         app: {{ .Release.Name }}-smanop
     spec:
       serviceAccountName: {{ .Release.Name }}-smanop-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Release.Name }}-smanop
         image: {{ include "secretsmanagementoperator.dockerimage" . }}

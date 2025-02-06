@@ -14,9 +14,13 @@ spec:
         app: {{ .Release.Name }}-apisixistio-operator
     spec:
       serviceAccountName: apisixapioperator-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       initContainers:
         - name: wait-apisix-admin
-          image: {{ .Values.initContainerImage }}
+          image: {{ include "docker.registry" .}}{{ .Values.initContainerImage }}
           command:
             - sh
             - -c
@@ -24,5 +28,5 @@ spec:
               until nc -z canvas-apisix-admin.canvas.svc.cluster.local 9180; do echo waiting for canvas-apisix-admin; sleep 2; done;
       containers:
       - name: {{ .Release.Name }}-apisixistio-operator
-        image: {{ .Values.apisixoperatorimage.repository }}
+        image: {{ include "docker.registry" .}}{{ .Values.apisixoperatorimage.repository }}
         imagePullPolicy: {{ .Values.apisixoperatorimage.pullPolicy }}

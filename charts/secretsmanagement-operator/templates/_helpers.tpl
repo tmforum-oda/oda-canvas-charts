@@ -2,7 +2,7 @@
 build the full docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "secretsmanagementoperator.dockerimage" -}}
-  {{- .Values.image -}}:{{- .Values.version -}}
+  {{ include "docker.registry" .}}{{- .Values.image -}}:{{- .Values.version -}}
   {{- if .Values.prereleaseSuffix -}}
     -{{- .Values.prereleaseSuffix -}}
   {{- end -}}
@@ -13,7 +13,7 @@ build the full docker image name from image + version + prereleaseSuffix
 build the full sidecar docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "secretsmanagementoperator.sidecarDockerimage" -}}
-  {{- .Values.sidecarImage -}}:{{- .Values.sidecarVersion -}}
+  {{ include "docker.registry" .}}{{- .Values.sidecarImage -}}:{{- .Values.sidecarVersion -}}
   {{- if .Values.sidecarPrereleaseSuffix -}}
     -{{- .Values.sidecarPrereleaseSuffix -}}
   {{- end -}}

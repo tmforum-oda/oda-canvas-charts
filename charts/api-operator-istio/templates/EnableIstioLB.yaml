@@ -9,9 +9,13 @@ spec:
   template:
     spec:
       serviceAccountName: apioperator-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: patch-istio-ingress
-        image: {{ .Values.global.hookImages.kubectl }}  # Using kubectl image
+        image: {{ include "docker.registry" .}}{{ .Values.global.hookImages.kubectl }}  # Using kubectl image
         command:
           - /bin/sh
           - -c

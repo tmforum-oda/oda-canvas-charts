@@ -65,7 +65,7 @@ Create the name of the service account to use
 build the full apiop docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "api-operator-istio.apiopDockerimage" -}}
-  {{- .Values.deployment.apiopImage -}}:{{- .Values.deployment.apiopVersion -}}
+  {{ include "docker.registry" .}}{{- .Values.deployment.apiopImage -}}:{{- .Values.deployment.apiopVersion -}}
   {{- if .Values.deployment.apiopPrereleaseSuffix -}}
     -{{- .Values.deployment.apiopPrereleaseSuffix -}}
   {{- end -}}
@@ -82,4 +82,3 @@ overwrite apiop imagePullSecret with "Always" if prereleaseSuffix is set
     {{- .Values.deployment.apiopImagePullPolicy -}}
   {{- end -}}
 {{- end -}}
-

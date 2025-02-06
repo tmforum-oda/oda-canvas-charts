@@ -11,9 +11,13 @@ spec:
   template:
     spec:
       serviceAccountName: odacomponent-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
         - name: component-checker
-          image: {{ .Values.global.hookImages.kubectl }}
+          image: {{ include "docker.registry" .}}{{ .Values.global.hookImages.kubectl }}
           command:
             - /bin/sh
             - -c

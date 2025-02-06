@@ -60,3 +60,27 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Custom/private docker image registry
+*/}}
+{{- define "docker.registry" -}}
+{{- if .Values.global.image.registry }}
+{{- $registry := (trimSuffix "/" .Values.global.image.registry) }}
+{{- printf "%s/" $registry }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+Create image pull secrets
+*/}}
+{{- define "image-pull-secrets" -}}
+{{- range .Values.global.imagePullSecrets }}
+  {{- if eq (typeOf .) "map[string]interface {}" }}
+- {{ toYaml . | trim }}
+  {{- else }}
+- name: {{ . }}
+  {{- end }}
+{{- end }}
+{{- end -}}

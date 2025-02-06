@@ -16,6 +16,10 @@ spec:
         app: compcrdwebhook 
         {{- include "oda-webhook.labels" . | nindent 8 }}
     spec:
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: compcrdwebhook 
         image: {{ include "oda-webhook.dockerimage" . }}

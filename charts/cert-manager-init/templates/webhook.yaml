@@ -15,9 +15,13 @@ metadata:
 spec:
   template:
     spec:
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
         - name: post-install
-          image: {{ .Values.global.hookImages.busybox }}
+          image: {{ include "docker.registry" .}}{{ .Values.global.hookImages.busybox }}
           imagePullPolicy: IfNotPresent
           command: ['sleep', '{{- $delay}}']
       restartPolicy: OnFailure

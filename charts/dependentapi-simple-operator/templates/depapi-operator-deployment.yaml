@@ -15,6 +15,10 @@ spec:
         app: {{ .Release.Name }}-depapi-op
     spec:
       serviceAccountName: {{ .Release.Name }}-depapi-op-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Release.Name }}-depapi-op
         image: {{ include "dependentapi-simple-operator.dockerimage" . }}

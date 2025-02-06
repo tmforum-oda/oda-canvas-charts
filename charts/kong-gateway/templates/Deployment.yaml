@@ -14,9 +14,13 @@ spec:
         app: {{ .Release.Name }}-kongistio-operator
     spec:
       serviceAccountName: kongapioperator-account
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       initContainers:
         - name: wait-kong-admin
-          image: {{ .Values.initContainerImage }}
+          image: {{ include "docker.registry" .}}{{ .Values.initContainerImage }}
           command:
             - sh
             - -c
@@ -24,5 +28,5 @@ spec:
               until nc -z canvas-kong-admin.kong.svc.cluster.local 8001; do echo waiting for kong-admin; sleep 2; done;
       containers:
       - name: {{ .Release.Name }}-kongistio-operator
-        image: {{ .Values.kongoperatorimage.repository }}
+        image: {{ include "docker.registry" .}}{{ .Values.kongoperatorimage.repository }}
         imagePullPolicy: {{ .Values.kongoperatorimage.pullPolicy }}

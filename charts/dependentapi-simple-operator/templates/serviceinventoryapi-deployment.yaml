@@ -15,6 +15,10 @@ spec:
       labels:
         app: {{ .Release.Name }}-info-service
     spec:
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- include "image-pull-secrets" . |nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Release.Name }}-info-service
         image: {{ include "dependentapi-serviceinventoryapi.dockerimage" . }}

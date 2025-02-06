@@ -15,7 +15,8 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.1.1
+version: 1.1.2
+# version: 1.1.2 - Added support for custom/private docker registry and image pull secrets
 # version: 1.1.1 - Templatized hardcoded images
 # version: 1.1.0 - updated to use v1 of CRD spec
 # version: 1.0.2 - updated appVersion to v1beta4

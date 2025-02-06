@@ -2,7 +2,7 @@
 build the full dependent api docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "dependentapi-simple-operator.dockerimage" -}}
-  {{- .Values.image -}}:{{- .Values.version -}}
+  {{ include "docker.registry" .}}{{- .Values.image -}}:{{- .Values.version -}}
   {{- if .Values.prereleaseSuffix -}}
     -{{- .Values.prereleaseSuffix -}}
   {{- end -}}
@@ -25,7 +25,7 @@ overwrite imagePullSecret with "Always" if prereleaseSuffix is set
 build the full dependent api docker image name from image + version + prereleaseSuffix
 */}}
 {{- define "dependentapi-serviceinventoryapi.dockerimage" -}}
-  {{- .Values.serviceInventoryAPI.image -}}:{{- .Values.serviceInventoryAPI.version -}}
+  {{ include "docker.registry" .}}{{- .Values.serviceInventoryAPI.image -}}:{{- .Values.serviceInventoryAPI.version -}}
   {{- if .Values.serviceInventoryAPI.prereleaseSuffix -}}
     -{{- .Values.serviceInventoryAPI.prereleaseSuffix -}}
   {{- end -}}
