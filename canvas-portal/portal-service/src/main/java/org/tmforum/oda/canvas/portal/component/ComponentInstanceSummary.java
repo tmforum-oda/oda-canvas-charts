@@ -47,9 +47,9 @@ public class ComponentInstanceSummary {
         String spec = JsonUtil.object2Json(genericKubernetesResource.getAdditionalProperties().get("spec"));
         String status = JsonUtil.object2Json(genericKubernetesResource.getAdditionalProperties().get("status"));
         String name = genericKubernetesResource.getMetadata().getName();
-        String type = JsonPathUtil.findOne(spec, "$.type");
+        String type = JsonPathUtil.findOne(spec, "$.componentMetadata.type");
         if (type == null) {
-            type = JsonPathUtil.findOne(spec, "$.id") + "-" + JsonPathUtil.findOne(spec, "$.name");
+            type = JsonPathUtil.findOne(spec, "$.componentMetadata.id") + "-" + JsonPathUtil.findOne(spec, "$.componentMetadata.name");
         }
         ComponentType componentType = ComponentType.from(type);
         // FIXME: get vendor?
@@ -61,8 +61,8 @@ public class ComponentInstanceSummary {
                 .vendor(vendor)
                 .domain(componentType.getDomain())
                 .release(getReleaseName(genericKubernetesResource.getMetadata()))
-                .version(JsonPathUtil.findOne(spec, "$.version"))
-                .description(JsonPathUtil.findOne(spec, "$.description"))
+                .version(JsonPathUtil.findOne(spec, "$.componentMetadata.version"))
+                .description(JsonPathUtil.findOne(spec, "$.componentMetadata.description"))
                 .status(getStatus(status))
                 .createTime(Date.from(Instant.parse(genericKubernetesResource.getMetadata().getCreationTimestamp())))
                 .build();

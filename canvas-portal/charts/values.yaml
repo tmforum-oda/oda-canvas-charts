@@ -16,7 +16,7 @@ env:
   portalUsername: "admin"
   portalPassword: "pAssw0rd"
   # Specifies the namespaces where oda components deployed, format: [components,test]
-  odaComponentNamespace: []
+  odaComponentNamespace: [components]
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

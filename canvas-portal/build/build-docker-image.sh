@@ -17,6 +17,6 @@ cd ./portal-service/target
 
 current_time=$(date '+%Y%m%d%H%M%S')
 
-docker build . -t canvas-portal:${current_time}
+docker build . -t oda-dashboard:${current_time}
 
-echo "canvas portal image canvas-portal:${current_time} build success"
+echo "canvas portal image oda-dashboard:${current_time} build success"

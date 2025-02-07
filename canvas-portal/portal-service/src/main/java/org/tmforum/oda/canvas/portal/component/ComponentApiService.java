@@ -1,6 +1,8 @@
 package org.tmforum.oda.canvas.portal.component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +28,41 @@ public class ComponentApiService {
 
     private final KubernetesClient kubeClient;
 
+    private final Map<Integer, CustomResourceDefinitionContext> customResourceDefinitionContexts = new ConcurrentHashMap<>();
+
     public ComponentApiService(KubernetesClient kubeClient) {
         this.kubeClient = kubeClient;
     }
 
-    private static final CustomResourceDefinitionContext ODA_COMPONENT_API_CRD_CONTEXT = new CustomResourceDefinitionContext.Builder()
-            .withName("apis.oda.tmforum.org")
-            .withGroup("oda.tmforum.org")
-            .withScope("Namespaced")
-            .withVersion("v1alpha3")
-            .withPlural("apis")
-            .withKind("api")
-            .build();
+    /**
+     * Get the context for the Custom Resource Definition
+     *
+     * @return crd context
+     * @throws BaseAppException
+     */
+    public CustomResourceDefinitionContext getCustomResourceDefinitionContext(String namespace) throws BaseAppException {
+        synchronized (customResourceDefinitionContexts) {
+            for (String version : ComponentInstanceService.SUPPORTED_VERSIONS) {
+                CustomResourceDefinitionContext customResourceDefinitionContext = new CustomResourceDefinitionContext.Builder()
+                        .withName("exposedapis.oda.tmforum.org")
+                        .withGroup("oda.tmforum.org")
+                        .withScope("Namespaced")
+                        .withVersion(version)
+                        .withPlural("exposedapis")
+                        .withKind("ExposedAPI")
+                        .build();
+                try {
+                    kubeClient.genericKubernetesResources(customResourceDefinitionContext).inNamespace(namespace).list();
+                    return customResourceDefinitionContext;
+                }
+                catch (Exception e) {
+                    LOGGER.warn("CRD exposedapis.oda.tmforum.org version is not {}, trying another one", version, e);
+                }
+            }
+        }
+        ExceptionPublisher.publish(CanvasErrorCode.ODA_UNSUPPORTED);
+        return null;
+    }
 
     /**
      * list component api resource
@@ -47,7 +72,7 @@ public class ComponentApiService {
      */
     public List<GenericKubernetesResource> listOdaComponentApis(String namespace, String componentName) throws BaseAppException {
         try {
-            List<GenericKubernetesResource> apis = kubeClient.genericKubernetesResources(ODA_COMPONENT_API_CRD_CONTEXT).inNamespace(namespace).withLabel("oda.tmforum.org/componentName", componentName).list().getItems();
+            List<GenericKubernetesResource> apis = kubeClient.genericKubernetesResources(getCustomResourceDefinitionContext(namespace)).inNamespace(namespace).withLabel("oda.tmforum.org/componentName", componentName).list().getItems();
             return apis;
         }
         catch (Exception e) {
@@ -67,7 +92,7 @@ public class ComponentApiService {
     public GenericKubernetesResource getOdaComponentApi(String namespace, String name) throws BaseAppException {
         GenericKubernetesResource api = null;
         try {
-            api = kubeClient.genericKubernetesResources(ODA_COMPONENT_API_CRD_CONTEXT).inNamespace(namespace).withName(name).get();
+            api = kubeClient.genericKubernetesResources(getCustomResourceDefinitionContext(namespace)).inNamespace(namespace).withName(name).get();
         }
         catch (Exception e) {
             LOGGER.warn("Failed to get oda component api[{}] in namespace[{}], tenantId[{}], error: ", name, namespace, e);

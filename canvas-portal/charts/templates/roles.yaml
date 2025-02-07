@@ -84,6 +84,11 @@ rules:
   resources:
     - components
     - apis
+    - dependentapis
+    - exposedapis
+    - publishednotifications
+    - subscribednotifications
+    - secretsmanagements
   verbs:
     - create
     - delete
@@ -111,7 +116,6 @@ rules:
   verbs:
     - get
     - list
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -124,7 +128,7 @@ roleRef:
   name: canvas-portal-role-namespaced
 subjects:
   - kind: ServiceAccount
-    name: canvas-portal
+    name: {{ include "canvas-portal.serviceAccountName" . }}
     namespace: {{ $.Release.Namespace }}
   {{- end }}
 {{- end }}

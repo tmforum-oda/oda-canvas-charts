@@ -2,4 +2,4 @@ apiVersion: v2
 name: canvas-portal
 description: canvas portal chart
 type: application
-version: 0.1.0
+version: 1.0.0

@@ -4,7 +4,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: canvas-portal
-  #namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - ""
@@ -89,6 +89,11 @@ rules:
   resources:
     - components
     - apis
+    - dependentapis
+    - exposedapis
+    - publishednotifications
+    - subscribednotifications
+    - secretsmanagements
   verbs:
     - create
     - delete
@@ -121,13 +126,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: canvas-portal
-  #namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: canvas-portal
 subjects:
   - kind: ServiceAccount
-    name: canvas-portal
+    name: {{ include "canvas-portal.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

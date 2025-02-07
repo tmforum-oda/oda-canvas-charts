@@ -44,7 +44,7 @@ public class ComponentInstanceService {
     }
 
     private final Map<Integer, CustomResourceDefinitionContext> customResourceDefinitionContexts = new ConcurrentHashMap<>();
-    private static final String[] SUPPORTED_VERSIONS = new String[]{"v1beta3", "v1beta1", "v1alpha4", "v1alpha3", "v1alpha2", "v1alpha1"};
+    public static final String[] SUPPORTED_VERSIONS = new String[]{"v1", "v1beta4", "v1beta3", "v1beta1", "v1alpha4", "v1alpha3", "v1alpha2", "v1alpha1"};
 
     /**
      * Get a list of ODA Component instances
