@@ -15,7 +15,7 @@ on:
     - odaa-*
     paths: 
       - source/webhooks/webhook-dockerfile
-      - source/webhooks/implementation/**/*
+      - source/webhooks/implementation/*
 
 jobs:
   build-compcrdwebhook-prerelease-dockerfile-job:

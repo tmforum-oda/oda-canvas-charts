@@ -1,170 +1,72 @@
-﻿apiVersion: oda.tmforum.org/v1beta3
+apiVersion: oda.tmforum.org/v1beta3
 kind: Component
 metadata:
-  name: release-name-productcatalogmanagement
+  name: {{.Release.Name}}-{{.Values.component.name}}
   labels:
-    oda.tmforum.org/componentName: release-name-productcatalogmanagement
+    oda.tmforum.org/componentName: {{.Release.Name}}-{{.Values.component.name}}
+  annotations:
+    webhookconverted: Webhook converted From oda.tmforum.org/v1 to oda.tmforum.org/v1beta3
 spec:
-  id: TMFC001
-  name: productcatalogmanagement
-  functionalBlock: CoreCommerce
-  publicationDate: 2024-09-17T00:00:00.000Z
-  status: specified
-  version: 0.0.1
-  description: "Simple Product Catalog ODA-Component from Open-API reference implementation."
-  maintainers:
-  - name: Lester Thomas
-    email: lester.thomas@vodafone.com
-  owners:
-    - name: Lester Thomas
-      email: lester.thomas@vodafone.com     
   coreFunction:
-    exposedAPIs: 
-    - name: productcatalogmanagement
-      specification: ["https://raw.githubusercontent.com/tmforum-apis/TMF620_ProductCatalog/master/TMF620-ProductCatalog-v4.0.0.swagger.json"]
-      implementation: release-name-prodcatapi
-      apiType: openapi
-      apiKeyVerification: 
-        enabled: false
-        location: header
-      rateLimit: 
-        enabled: false
-        identifier: IP
-        interval: pm
-        limit: "6"
-      quota: 
-        identifier: ""
-        limit: ""
-      OASValidation: 
-        allowUnspecifiedCookies: false
-        allowUnspecifiedHeaders: false
-        allowUnspecifiedQueryParams: false
-        requestEnabled: false
-        responseEnabled: false
-      CORS: 
-        allowCredentials: false
-        allowOrigins: https://allowed-origin.com, https://allowed-origin2.com
-        enabled: false
-        handlePreflightRequests:
-          allowHeaders: Accept, X-Requested-With, Content-Type, Access-Control-Request-Method,
-            Access-Control-Request-Headers
-          allowMethods: GET, POST
-          enabled: false
-          maxAge: 36000
-      template: ""
-      path: /release-name-productcatalogmanagement/tmf-api/productCatalogManagement/v4
-      developerUI: /release-name-productcatalogmanagement/tmf-api/productCatalogManagement/v4/docs
-      port: 8080
-    - name: promotionmanagement
-      specification: ["https://raw.githubusercontent.com/tmforum-apis/TMF671_Promotion/master/TMF671-Promotion-v4.0.0.swagger.json"]
-      implementation: release-name-promgmtapi
-      apiType: openapi
-      apiKeyVerification: 
-        enabled: false
-        location: header
-      rateLimit: 
-        enabled: false
-        identifier: IP
-        interval: pm
-        limit: "6"
-      quota: 
-        identifier: ""
-        limit: ""
-      OASValidation: 
-        allowUnspecifiedCookies: false
-        allowUnspecifiedHeaders: false
-        allowUnspecifiedQueryParams: false
-        requestEnabled: false
-        responseEnabled: false
-      CORS: 
-        allowCredentials: false
-        allowOrigins: https://allowed-origin.com, https://allowed-origin2.com
-        enabled: false
-        handlePreflightRequests:
-          allowHeaders: Accept, X-Requested-With, Content-Type, Access-Control-Request-Method,
-            Access-Control-Request-Headers
-          allowMethods: GET, POST
-          enabled: false
-          maxAge: 36000
-      template: ""
-      path: /release-name-productcatalogmanagement/tmf-api/promotionManagement/v4
-      developerUI: /release-name-productcatalogmanagement/tmf-api/promotionManagement/v4/docs
-      port: 8080      
+    exposedAPIs:
+      - name: productcatalogmanagement
+        specification: https://raw.githubusercontent.com/tmforum-apis/TMF620_ProductCatalog/master/TMF620-ProductCatalog-v4.0.0.swagger.json
+        implementation: {{.Release.Name}}-prodcatapi
+        apiType: openapi
+        path: >-
+          /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/productCatalogManagement/v4
+        developerUI: >-
+          /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/productCatalogManagement/v4/docs
+        port: 8080
+      - name: promotionmanagement
+        specification:
+          - >-
+            https://raw.githubusercontent.com/tmforum-apis/TMF671_Promotion/master/TMF671-Promotion-v4.0.0.swagger.json
+        implementation: {{.Release.Name}}-promgmtapi
+        apiType: openapi
+        path: >-
+          /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/promotionManagement/v4
+        developerUI: >-
+          /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/promotionManagement/v4/docs
+        port: 8080
     dependentAPIs:
-      []
+      - name: downstreamproductcatalog
+        apiType: openapi
+        specification: https://raw.githubusercontent.com/tmforum-apis/TMF620_ProductCatalog/master/TMF620-ProductCatalog-v4.0.0.swagger.json
   eventNotification:
     publishedEvents: []
     subscribedEvents: []
-  managementFunction: 
-    exposedAPIs: 
-    - name: metrics
-      apiType: prometheus
-      apiKeyVerification: 
-        enabled: false
-        location: header
-      rateLimit: 
-        enabled: false
-        identifier: IP
-        interval: pm
-        limit: "6"
-      quota: 
-        identifier: ""
-        limit: ""
-      OASValidation: 
-        allowUnspecifiedCookies: false
-        allowUnspecifiedHeaders: false
-        allowUnspecifiedQueryParams: false
-        requestEnabled: false
-        responseEnabled: false
-      CORS: 
-        allowCredentials: false
-        allowOrigins: https://allowed-origin.com, https://allowed-origin2.com
-        enabled: false
-        handlePreflightRequests:
-          allowHeaders: Accept, X-Requested-With, Content-Type, Access-Control-Request-Method,
-            Access-Control-Request-Headers
-          allowMethods: GET, POST
-          enabled: false
-          maxAge: 36000
-      template: ""
-      implementation: release-name-productcatalogmanagement-sm
-      path: /release-name-productcatalogmanagement/metrics
-      port: 4000    
+  managementFunction:
+    exposedAPIs:
+      - name: metrics
+        apiType: prometheus
+        implementation: {{.Release.Name}}-{{.Values.component.name}}-sm
+        path: /{{.Release.Name}}-{{.Values.component.name}}/metrics
+        port: 4000
   securityFunction:
-    controllerRole: Admin
-    exposedAPIs: 
-    - name: partyrole
-      specification: ["https://raw.githubusercontent.com/tmforum-apis/TMF669_PartyRole/master/TMF669-PartyRole-v4.0.0.swagger.json"]
-      implementation: release-name-partyroleapi
-      apiType: openapi
-      apiKeyVerification: 
-        enabled: false
-        location: header
-      rateLimit: 
-        enabled: false
-        identifier: IP
-        interval: pm
-        limit: "6"
-      quota: 
-        identifier: ""
-        limit: ""
-      OASValidation: 
-        allowUnspecifiedCookies: false
-        allowUnspecifiedHeaders: false
-        allowUnspecifiedQueryParams: false
-        requestEnabled: false
-        responseEnabled: false
-      CORS: 
-        allowCredentials: false
-        allowOrigins: https://allowed-origin.com, https://allowed-origin2.com
-        enabled: false
-        handlePreflightRequests:
-          allowHeaders: Accept, X-Requested-With, Content-Type, Access-Control-Request-Method,
-            Access-Control-Request-Headers
-          allowMethods: GET, POST
-          enabled: false
-          maxAge: 36000
-      template: ""
-      path: /release-name-productcatalogmanagement/tmf-api/partyRoleManagement/v4
-      developerUI: /release-name-productcatalogmanagement/tmf-api/partyRoleManagement/v4/docs
-      port: 8080
+    exposedAPIs:
+      - name: partyrole
+        specification:
+          - >-
+            https://raw.githubusercontent.com/tmforum-apis/TMF669_PartyRole/master/TMF669-PartyRole-v4.0.0.swagger.json
+        implementation: {{.Release.Name}}-partyroleapi
+        apiType: openapi
+        path: >-
+          /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/partyRoleManagement/v4
+        developerUI: >-
+          /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/partyRoleManagement/v4/docs
+        port: 8080
+    controllerRole: {{.Values.security.canvasSystemRole}}
+  id: {{.Values.component.id}}
+  name: {{.Values.component.name}}
+  functionalBlock: {{.Values.component.functionalBlock}}
+  publicationDate: {{.Values.component.publicationDate}}
+  status: specified
+  version: {{.Values.component.version}}
+  description: Simple Product Catalog ODA-Component from Open-API reference implementation.
+  maintainers:
+    - name: Lester Thomas
+      email: lester.thomas@vodafone.com
+  owners:
+    - name: Lester Thomas
+      email: lester.thomas@vodafone.com

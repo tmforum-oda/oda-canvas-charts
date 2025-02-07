@@ -1,0 +1,45 @@
+# Default values for productcatalog.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+component:
+  # Specifies whether a service account should be created
+  id: TMFC001
+  name: productcatalogmanagement
+  functionalBlock: CoreCommerce
+  publicationDate: 2024-09-17T00:00:00.000Z
+  version: "0.0.1"
+  storageClassName: default
+  dependentAPIs:
+    enabled: true
+    rejectUnauthorizedCertificates: false
+security:
+  canvasSystemRole: Admin
+mongodb:
+  port: 27017
+  database: tmf
+api:
+  image: lesterthomas/productcatalogapi:0.23
+  versionlabel: productcatalogapi-0.21
+  otlp:
+    console:
+      enabled: false
+    protobuffCollector:
+      enabled: true
+      url: http://datadog-agent.default.svc.cluster.local:4318/v1/traces
+partyrole:
+  image: lesterthomas/partyroleapi:1.0
+  versionlabel: partyroleapi-1.0
+promotionmgmt:
+  image: lesterthomas/promotionmgmtapi:0.5
+  versionlabel: promotionmgmtapi-0.5
+  otlp:
+    console:
+      enabled: false
+    protobuffCollector:
+      enabled: true
+      url: http://datadog-agent.default.svc.cluster.local:4318/v1/traces
+canvasinfo:
+  host: info.canvas.svc.cluster.local
+  basepath: /

@@ -9,7 +9,7 @@ compcrdwebhook :
   
   paths:
     - source/webhooks/webhook-dockerfile
-    - source/webhooks/implementation/**/*
+    - source/webhooks/implementation/*
   buildContext: source/webhooks
   # default is "Dockerfile" in buildContext
   buildDockerfile: source/webhooks/webhook-dockerfile  

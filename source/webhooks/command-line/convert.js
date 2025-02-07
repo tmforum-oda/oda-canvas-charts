@@ -7,7 +7,19 @@ const http = require('http');
 function loadYamlFile(filePath) {
     try {
         // console.log(`Loading file: ${filePath}`);
-        const fileContents = fs.readFileSync(filePath);
+        let fileContents = fs.readFileSync(filePath, 'utf8');
+        fileContents = fileContents.replace(/\r\n/g, '\n'); // Normalize line endings
+
+        // show a warning if the file contains {{- if
+        if (fileContents.includes('{{- if')) {
+            console.warn('Warning: The file contains {{- if xxx }} clauses which may cause issues with the conversion');
+            process.exit(1);
+        } 
+
+        fileContents = fileContents.replace(/\{\{\s+/g, '{{').replace(/\s+\}\}/g, '}}');
+        fileContents = fileContents.replace(/\{\{([^}]+)\}\}/g, (match, p1) => `{{${p1.replace(/\./g, 'PPP')}}}`);
+        fileContents = fileContents.replace(/\{\{/g, 'XX').replace(/\}\}/g, 'YY');
+
         // console.log(fileContents);
         return yaml.load(fileContents);
     } catch (e) {
@@ -35,12 +47,15 @@ function createConversionReview(component, inDesiredVersion) {
 function main() {
     const args = process.argv.slice(2);
     if (args.length < 2) {
-        console.error('Usage: npm start <path-to-yaml-file> <new-version>');
+        console.error('Usage: npm start <path-to-yaml-file> <new-version> [output-file]');
         process.exit(1);
     }
 
     const yamlFilePath = args[0];
     const newVersion = args[1];
+    const outputFilePath = args[2]; // Optional third parameter
+    console.log(`Converting ${yamlFilePath} to version ${newVersion}`);
+    console.log(`Output file: ${outputFilePath}`);
 
     const component = loadYamlFile(yamlFilePath);
     const conversionReview = createConversionReview(component, newVersion);
@@ -72,8 +87,18 @@ function main() {
         res.on('end', () => {
             const result = JSON.parse(data);
             const convertedObject = result.response.convertedObjects[0];
-            // print as YAML
-            console.log(Buffer.from(yaml.dump(convertedObject)).toString());
+            let yamlOutput = yaml.dump(convertedObject);
+
+            // Replace tokens back to original
+            yamlOutput = yamlOutput.replace(/XX/g, '{{').replace(/PPP/g, '.').replace(/YY/g, '}}');
+
+            if (outputFilePath) {
+                fs.writeFileSync(outputFilePath, yamlOutput, 'utf8');
+                console.log(`Converted object saved to ${outputFilePath}`);
+            } else {
+                // print as YAML
+                console.log(Buffer.from(yamlOutput).toString());
+            }
         });
         
     });

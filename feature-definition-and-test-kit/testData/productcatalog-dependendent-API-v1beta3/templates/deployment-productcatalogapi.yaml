@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Release.Name}}-prodcatapi
+  labels:
+    oda.tmforum.org/componentName: {{.Release.Name}}-{{.Values.component.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      impl: {{.Release.Name}}-prodcatapi
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name}}-{{.Values.component.name}}
+        impl: {{.Release.Name}}-prodcatapi
+        version: {{.Values.api.versionlabel}}
+    spec:
+      containers:
+      - name: {{.Release.Name}}-prodcatapi
+        image: {{.Values.api.image}}
+        env:
+        - name: DEPENDENT_APIS_REJECT_UNAUTHORIZED_CERTIFICATES
+          value: "{{.Values.component.dependentAPIs.rejectUnauthorizedCertificates}}"
+        - name: RELEASE_NAME
+          value: {{.Release.Name}}
+        - name: COMPONENT_NAME
+          value: {{.Release.Name}}-{{.Values.component.name}}
+        - name: OTL_EXPORTER_CONSOLE_ENABLED
+          value: "{{.Values.api.otlp.console.enabled}}"
+        - name: OTL_EXPORTER_TRACE_PROTO_ENABLED
+          value: "{{.Values.api.otlp.protobuffCollector.enabled}}"
+        - name: OTL_EXPORTER_TRACE_PROTO_COLLECTOR_URL
+          value: {{.Values.api.otlp.protobuffCollector.url}}
+        - name: MONGODB_HOST
+          value: {{.Release.Name}}-mongodb
+        - name: MONGODB_PORT
+          value: "{{.Values.mongodb.port}}"
+        - name: MONGODB_DATABASE
+          value: {{.Values.mongodb.database}}
+        - name: NODE_ENV
+          value: production
+        - name: CANVAS_INFO_HOST_PORT
+          value: "{{.Values.canvasinfo.host}}" 
+        - name: CANVAS_INFO_BASEPATH
+          value: "{{.Values.canvasinfo.basepath}}" 
+        imagePullPolicy: Always
+        ports:
+        - name: {{.Release.Name}}-pcapi
+          containerPort: 8080
+        startupProbe:
+          httpGet:
+            path: /{{.Release.Name}}-{{.Values.component.name}}/tmf-api/productCatalogManagement/v4/catalog
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 30

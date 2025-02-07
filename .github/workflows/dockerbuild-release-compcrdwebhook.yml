@@ -14,7 +14,7 @@ on:
     - main
     paths: 
       - source/webhooks/webhook-dockerfile
-      - source/webhooks/implementation/**/*
+      - source/webhooks/implementation/*
 
 jobs:
   build-compcrdwebhook-release-dockerfile-job:
